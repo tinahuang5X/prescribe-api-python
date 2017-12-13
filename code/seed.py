@@ -1,81 +1,29 @@
 import psycopg2
-from config import config
 
 
-def insert_drug(generic, brand, indications, doctorId):
-    """ insert a new vendor into the vendors table """
-    sql = """INSERT INTO Drug(generic, brand, indications)
-             VALUES(%s, %s, %s, %s) RETURNING doctorId;"""
-    conn = None
-    id = None
-    try:
-        # read database configuration
-        params = config()
-        # connect to the PostgreSQL database
-        conn = psycopg2.connect(**params)
-        # create a new cursor
-        cur = conn.cursor()
-        # execute the INSERT statement
-        cur.execute(sql, (generic, brand, indications, doctorId,))
-        # get the generated id back
-        doctorId = cur.fetchone()[0]
-        # commit the changes to the database
-        conn.commit()
-        # close communication with the database
-        cur.close()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
-    finally:
-        if conn is not None:
-            conn.close()
+conn = psycopg2.connect(host="localhost",database="backend_dev", user="backend_admin", password="postgres")
+print ("Opened database successfully")
 
-    return id
+cur = conn.cursor()
 
-def insert_drugList(drugList):
-    """ insert multiple vendors into the vendors table  """
-    sql = "INSERT INTO Drug(generic, brand, indications, doctorId) VALUES(%s, %s, %s, %s)"
-    conn = None
-    try:
-        # read database configuration
-        params = config()
-        # connect to the PostgreSQL database
-        conn = psycopg2.connect(**params)
-        # create a new cursor
-        cur = conn.cursor()
-        # execute the INSERT statement
-        cur.executemany(sql,(drugList))
-        # commit the changes to the database
-        conn.commit()
-        # close communication with the database
-        cur.close()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
-    finally:
-        if conn is not None:
-            conn.close()
+cur.execute("INSERT INTO Doctor (id, firstName, lastName, email, hashedPassword) \
+      VALUES (1, 'Tina', 'Huang', 'tinahuang@gmail.com', '$2a$12$C9AYYmcLVGYlGoO4vSZTPud9ArJwbGRsJ6TUsNULzR48z8fOnTXbS' )");
 
-if __name__ == '__main__':
-    # insert one vendor
-    insert_drug('atorvastatin',
-      'Liptor',
-      'lower cholesterol', doctorId)
-    # insert multiple vendors
+cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId) \
+      VALUES (1, 'atorvastatin', 'Liptor', 'lower cholesterol', 1 )");
 
-    insert_drugList([
+cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId) \
+      VALUES (2, 'levothyroxine', 'Synthroid', 'treat hypothyroidism', 1 )");
 
-          ('levothyroxine',
-          'Synthroid',
-          'treat hypothyroidism'),
+cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId)\
+      VALUES (3, 'metformin', 'Glucophage', 'treat type 2 diabetes', 1 )");
 
-        ('metformin',
-          'Glucophage',
-          'treat type 2 diabetes'),
+cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId)\
+      VALUES (4, 'omeprazole', 'Prilosec', 'treat gastroesophageal reflux disease ', 1 )");
 
-        ('omeprazole',
-          'Prilosec',
-          'treat gastroesophageal reflux disease'),
+cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId)\
+      VALUES (5, 'azithromycin', 'Zithromax', 'treat infections caused by bacteria', 1 )");
 
-        ('azithromycin',
-          'Zithromax',
-          'treat infections caused by bacteria')
-      ])
+conn.commit()
+print ("Records created successfully");
+conn.close()

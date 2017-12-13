@@ -1,18 +1,17 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 import sqlite3
-
+import psycopg2
+from config import config
 
 class Item(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id', type=int)
 
-    parser.add_argument('generic', type=str, required=True,
-    help="This field cannot be left blank!")
-    parser.add_argument('brand', type=str, required=True,
-    help="This field cannot be left blank!")
-    parser.add_argument('indications', type=str, required=True,
-    help="This field cannot be left blank!")
+    parser.add_argument('generic', type=str)
+    parser.add_argument('brand', type=str)
+    parser.add_argument('indications', type=str)
+    parser.add_argument('doctorId', type=int)
 
     # @jwt_required()
     def get(self, doctorId):
@@ -55,66 +54,122 @@ class Item(Resource):
         cursor = connection.cursor()
 
         query = "INSERT INTO items VALUES(?, ?, ?, ?, ?)"
-        cursor.execute(query, (item['id'], item['doctorId'], item['generic'], item['brand'], item['indications']))
+        cursor.execute(query, (item['id'], item['generic'], item['brand'], item['indications'], item['doctorId']))
 
         connection.commit()
         connection.close()
 
     # @jwt_required()
-    def delete(self, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+    def delete(self, id):
+        # connection = sqlite3.connect('data.db')
+        # cursor = connection.cursor()
 
-        query = "DELETE FROM items WHERE name=?"
-        cursor.execute(query, (name,))
+        conn = None
+        params = config()
 
-        connection.commit()
-        connection.close()
+        print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(**params)
 
+        cur = conn.cursor()
+
+        query = "DELETE FROM Drug WHERE id=%s"
+        cur.execute(query, (id,))
+
+        conn.commit()
+        cur.close()
+        conn.close()
         return {'message': 'Item deleted'}
 
     # @jwt_required()
-    def put(self, name):
-        data = Item.parser.parse_args()
-        item = self.find_by_name(name)
-        updated_item = {'name': name, 'price': data['price']}
-        if item is None:
-            try:
-                self.insert(updated_item)
-            except:
-                return {"message": "An error occurred inserting the item."}, 500
-        else:
-            try:
-                self.update(updated_item)
-            except:
+    @classmethod
+    def find_by_id(cls, id):
+        conn = None
+        params = config()
 
-                return {"message": "An error occurred updating the item."}, 500
+        print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(**params)
+
+        cur = conn.cursor()
+
+        query = "SELECT * FROM Drug WHERE id=%s"
+        cur.execute(query, (id,))
+        drug = cur.fetchone()
+        conn.close()
+
+        if drug:
+            print(drug)
+            return {'drug': {'id': drug[0], 'generic': drug[1], 'brand': drug[2], 'indications': drug[3], 'doctorId': drug[4]}}
+
+    def patch(self, id):
+        data = Item.parser.parse_args()
+        item = self.find_by_id(id)
+        print(item)
+        updated_item = {'id': id, 'generic': data['generic'], 'brand': data['brand'], 'indications': data['indications'], 'doctorId': data['doctorId']}
+        print(updated_item)
+        try:
+            self.update(updated_item)
+        except:
+
+            return {"message": "An error occurred updating the item."}, 500
         return updated_item
 
+
     @classmethod
-    def update(cls, item):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+    def update(cls,item):
+        conn = None
 
-        query = "UPDATE items SET price=? WHERE name=?"
-        cursor.execute(query, (item['price'], item['name']))
+        params = config()
 
-        connection.commit()
-        connection.close()
+        print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(**params)
+
+        cur = conn.cursor()
+        if generic:
+            query = "UPDATE Drug SET generic=%s WHERE id=%s"
+            cur.execute(query, (item['generic']))
+        if brand:
+            query = "UPDATE Drug SET brand=%s WHERE id=%s"
+            cur.execute(query, (item['brand']))
+        if indications:
+            query = "UPDATE Drug SET indications=%s WHERE id=%s"
+            cur.execute(query, (item['indications']))
+
+
+
+        # query = "UPDATE Drug SET generic=%s, brand=%s, indications=%s, doctorId=%s WHERE id=%s"
+        #
+        # cur.execute(query, (item['generic'], item['brand'], item['indications'], item['doctorId'], item['id']))
+
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
 
 
 class ItemList(Resource):
     # @jwt_required()
     def get(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+        # connection = sqlite3.connect('data.db')
+        # cursor = connection.cursor()
+        conn = None
+        params = config()
 
-        query = "SELECT * FROM items"
-        result = cursor.execute(query)
-        items = []
-        for row in result:
-            items.append({'id': row[0], 'doctorId': row[1], 'generic': row[2], 'brand': row[3], 'indications': row[4]})
+        print('Connecting to the PostgreSQL database...')
+        conn = psycopg2.connect(**params)
 
-        connection.close()
+        cur = conn.cursor()
 
-        return {'items': items}
+        query = "SELECT * FROM Drug"
+        cur.execute(query)
+        #import pdb; pdb.set_trace()
+        drugs = []
+        for row in cur:
+            drugs.append({'id': row[0], 'generic': row[1], 'brand': row[2], 'indications': row[3], 'doctorId': row[4] })
+
+            # connection.close()
+        cur.close()
+        conn.close()
+
+        return {'drugs': drugs}

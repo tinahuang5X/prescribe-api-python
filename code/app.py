@@ -15,8 +15,9 @@ api = Api(app)
 jwt = JWT(app, authenticate, identity)
 
 
-api.add_resource(Item, '/item/<int:doctorId>')
-api.add_resource(ItemList, '/items')
+# api.add_resource(Item, '/item/<int:doctorId>')
+api.add_resource(Item, '/drugs/<int:id>')
+api.add_resource(ItemList, '/drugs')
 api.add_resource(UserRegister, '/register')
 
 if __name__== '__main__':
