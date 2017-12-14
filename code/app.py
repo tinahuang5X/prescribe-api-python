@@ -1,22 +1,27 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
+from flask_cors import CORS
 
 
 from security import authenticate, identity
 from user import UserRegister
-from item import Item, ItemList
+from item import Item, ItemList, ItemOther
 
 app = Flask(__name__)
 
 app.secret_key = 'jose'
 api = Api(app)
+CORS(app)
 
 jwt = JWT(app, authenticate, identity)
 
 
 # api.add_resource(Item, '/item/<int:doctorId>')
-api.add_resource(Item, '/drugs/<int:id>')
+
+api.add_resource(Item, '/drugs/<int:doctorId>')
+api.add_resource(ItemOther, '/drugs/<int:id>')
+
 api.add_resource(ItemList, '/drugs')
 api.add_resource(UserRegister, '/register')
 

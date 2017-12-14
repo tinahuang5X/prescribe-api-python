@@ -17,9 +17,9 @@ def create_tables():
         """
         CREATE TABLE Drug (
             id SERIAL PRIMARY KEY,
-            generic TEXT NOT NULL,
-            brand TEXT NOT NULL,
-            indications TEXT NOT NULL,
+            generic TEXT,
+            brand TEXT,
+            indications TEXT,
             doctorId INTEGER NOT NULL REFERENCES Doctor (id) ON DELETE CASCADE
         )
         """,
