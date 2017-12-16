@@ -196,7 +196,7 @@ class ItemOther(Resource):
 
 
 class ItemList(Resource):
-    # @jwt_required()
+    @jwt_required()
     def get(self):
         # connection = sqlite3.connect('data.db')
         # cursor = connection.cursor()
@@ -218,5 +218,6 @@ class ItemList(Resource):
             # connection.close()
         cur.close()
         conn.close()
+        print(drugs)
 
-        return {'drugs': drugs}
+        return drugs

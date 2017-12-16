@@ -10,8 +10,8 @@ def create_tables():
             id SERIAL PRIMARY KEY,
             firstName TEXT NOT NULL,
             lastName TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            hashedPassword VARCHAR (60) NOT NULL
+            username TEXT NOT NULL UNIQUE,
+            password VARCHAR (60) NOT NULL
         )
         """,
         """

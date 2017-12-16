@@ -6,8 +6,8 @@ print ("Opened database successfully")
 
 cur = conn.cursor()
 
-cur.execute("INSERT INTO Doctor (id, firstName, lastName, email, hashedPassword) \
-      VALUES (1, 'Tina', 'Huang', 'tinahuang@gmail.com', '$2a$12$C9AYYmcLVGYlGoO4vSZTPud9ArJwbGRsJ6TUsNULzR48z8fOnTXbS' )");
+# cur.execute("INSERT INTO Doctor (id, firstName, lastName, username, password) \
+#       VALUES (1, 'Tina', 'Huang', 'tinahuang@gmail.com', '$2a$12$C9AYYmcLVGYlGoO4vSZTPud9ArJwbGRsJ6TUsNULzR48z8fOnTXbS' )");
 
 cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId) \
       VALUES (1, 'atorvastatin', 'Liptor', 'lower cholesterol', 1 )");
