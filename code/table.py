@@ -28,6 +28,8 @@ def create_tables():
             id SERIAL PRIMARY KEY,
             name TEXT NOT NULL,
             dob TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            address TEXT NOT NULL,
             doctorId INTEGER NOT NULL REFERENCES Doctor (id) ON DELETE CASCADE
         )
         """)

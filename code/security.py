@@ -7,20 +7,6 @@ from user import UserRegister
 import logging
 
 
-
-# def authenticate(username, hashedPassword):
-#     user = User.find_by_username(username)
-#     if user and safe_str_cmp(user.hashedPassword, hashedPassword):
-#         logging.warning("password comparison success")
-#         return user
-#     else:
-#         logging.warning(user, user.hashedPassword, hashedPassword, "login failure")
-#
-# def identity(payload):
-#     user_id = payload['identity']
-#     return User.find_by_id(user_id)
-
-
 def authenticate(username, password):
     user = User.find_by_username(username)
     if user and safe_str_cmp(user.password, password):
@@ -33,14 +19,13 @@ def identity(payload):
     user_id = payload['identity']
     return User.find_by_id(user_id)
 
-# from werkzeug.security import safe_str_cmp
-# from user import User
-#
-# def authenticate(username, password):
-#     user = User.find_by_username(username)
-#     if user and safe_str_cmp(user.password, password):
-#         return user
-#
-# def identity(payload):
-#     user_id = payload['identity']
-#     return User.find_by_id(user_id)
+class Token(object):
+
+    def __init__(self, access_token, identity):
+        # import pdb; pdb.set_trace()
+        self.access_token = access_token
+        self.identity = identity
+
+    @classmethod
+    def auth_response_handler(cls, access_token, identity):
+        return jsonify({'access_token': access_token.decode('utf-8'), 'userId': identity.id})

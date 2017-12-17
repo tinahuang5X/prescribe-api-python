@@ -7,11 +7,10 @@ import psycopg2
 from config import config
 
 
-
-
-from security import authenticate, identity
+from security import authenticate, identity, Token
 from user import UserRegister, User
 from item import Item, ItemList, ItemOther
+from patient import Patient, PatientList, PatientOther
 
 app = Flask(__name__)
 
@@ -34,9 +33,14 @@ def log_request_info():
 
 api.add_resource(Item, '/drugs/<int:doctorId>')
 api.add_resource(ItemOther, '/drugs/<int:id>')
-
 api.add_resource(ItemList, '/drugs')
-api.add_resource(UserRegister, '/register')
+
+api.add_resource(Patient, '/patients/<int:doctorId>')
+api.add_resource(PatientOther, '/patients/<int:id>')
+api.add_resource(PatientList, '/patients')
+
+
+api.add_resource(UserRegister, '/doctors')
 
 
 

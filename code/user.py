@@ -60,7 +60,7 @@ class UserRegister(Resource):
 
 
     parser = reqparse.RequestParser()
-    
+
     parser.add_argument('firstName',
         type=str,
         required=True,
@@ -71,7 +71,7 @@ class UserRegister(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
-    parser.add_argument('username',
+    parser.add_argument('email',
         type=str,
         required=True,
         help="This field cannot be left blank!"
@@ -85,7 +85,7 @@ class UserRegister(Resource):
     def post(self):
         data = UserRegister.parser.parse_args()
 
-        if User.find_by_username(data['username']):
+        if User.find_by_username(data['email']):
             return {"message": "User with that username already exists."}, 400
 
         conn = None
@@ -99,10 +99,12 @@ class UserRegister(Resource):
         query = """
         INSERT INTO doctor (firstName, lastName, username, password)
         VALUES ('{first_name}', '{last_name}', '{username}', '{password}'); """.format(first_name=data['firstName'], last_name=data['lastName'],
-        username=data['username'], password=data['password'] )
+        username=data['email'], password=data['password'] )
 
 
         cur.execute(query)
+
+
         # query = "INSERT INTO doctor VALUES (NULL, %s, %s, %s, %s)"
         #
         # cur.execute(query, (data['firstName'], data['lastName'], data['username'], data['password']))
@@ -111,4 +113,4 @@ class UserRegister(Resource):
 
         conn.close()
 
-        return {"message": "User created successfully"}, 201
+        return {"message": "Doctor created successfully"}, 201
