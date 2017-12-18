@@ -1,4 +1,5 @@
 from werkzeug.security import safe_str_cmp
+from flask_jwt import JWT, jwt_required, current_identity
 from user import User
 from flask_restful import Resource, reqparse
 import psycopg2
@@ -19,6 +20,10 @@ def identity(payload):
     user_id = payload['identity']
     return User.find_by_id(user_id)
 
+
+def make_payload(identity):
+    return {'user_id': identity.id}
+
 class Token(object):
 
     def __init__(self, access_token, identity):
@@ -27,5 +32,5 @@ class Token(object):
         self.identity = identity
 
     @classmethod
-    def auth_response_handler(cls, access_token, identity):
+    def auth_response(cls, access_token, identity):
         return jsonify({'access_token': access_token.decode('utf-8'), 'userId': identity.id})

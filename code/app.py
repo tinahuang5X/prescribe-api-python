@@ -1,10 +1,11 @@
 from flask import Flask, request
 from flask_restful import Api
-from flask_jwt import JWT
+from flask_jwt import JWT, jwt_required, current_identity
 from flask_cors import CORS
 from flask_restful import Resource, reqparse
 import psycopg2
 from config import config
+
 
 
 from security import authenticate, identity, Token
@@ -42,7 +43,22 @@ api.add_resource(PatientList, '/patients')
 
 api.add_resource(UserRegister, '/doctors')
 
+def authenticate(username, password):
+    user = User.find_by_username(username)
+    if user and safe_str_cmp(user.password, password):
+        logging.warning("password comparison success")
+        return user
+    else:
+        logging.warning(user, user.password, password, "login failure")
 
+def identity(payload):
+    user_id = payload['identity']
+    return User.find_by_id(user_id)
+
+@app.route('/userId')
+def make_payload():
+    user_id = payload['identity']
+    return {'user_id': user_id}
 
 
 if __name__== '__main__':
