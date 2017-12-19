@@ -15,22 +15,14 @@ def authenticate(username, password):
         return user
     else:
         logging.warning(user, user.password, password, "login failure")
+        return 400
 
 def identity(payload):
     user_id = payload['identity']
+    print('>>>>>> %s', user_id)
     return User.find_by_id(user_id)
 
+# def _custom_default_auth_response_handler(access_token, identity):
+#     return jsonify({'id': identity.id, 'access_token': access_token.decode('utf-8')})
 
-def make_payload(identity):
-    return {'user_id': identity.id}
-
-class Token(object):
-
-    def __init__(self, access_token, identity):
-        # import pdb; pdb.set_trace()
-        self.access_token = access_token
-        self.identity = identity
-
-    @classmethod
-    def auth_response(cls, access_token, identity):
-        return jsonify({'access_token': access_token.decode('utf-8'), 'userId': identity.id})
+# jwt.auth_request_callback = _custom_default_auth_response_handler
