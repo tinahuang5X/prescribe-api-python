@@ -5,7 +5,8 @@ from flask_cors import CORS
 from flask_restful import Resource, reqparse
 import psycopg2
 from config import config
-
+import os
+endpoint = os.environ['API_ENDPOINT']
 
 
 from security import authenticate, identity
@@ -13,24 +14,24 @@ from user import UserRegister, User
 from item import Item, ItemList, ItemOther
 from patient import Patient, PatientList, PatientOther
 
-app = Flask(__name__)
+application = Flask(__name__)
 
-app.secret_key = 'jose'
-api = Api(app)
-CORS(app)
+application.secret_key = 'jose'
+api = Api(application)
+CORS(application)
 
-jwt = JWT(app, authenticate, identity)
+jwt = JWT(application, authenticate, identity)
 
 
 
 # api.add_resource(Item, '/item/<int:doctorId>')
-@app.before_request
+@application.before_request
 
 def log_request_info():
 
-    app.logger.debug('Headers: %s', request.headers)
+    application.logger.debug('Headers: %s', request.headers)
 
-    app.logger.debug('Body: %s', request.get_data())
+    application.logger.debug('Body: %s', request.get_data())
 
 
 api.add_resource(Item, '/drugs/<int:doctorId>')
@@ -51,4 +52,4 @@ api.add_resource(UserRegister, '/doctors')
 
 
 if __name__== '__main__':
-    app.run(port=8000, debug=True)
+    application.run(port=8000, debug=True)
