@@ -16,6 +16,8 @@ class Item(Resource):
 
     # @jwt_required()
     def get(self, doctorId):
+        if current_identity.id != doctorId:
+            return "you don\'t have permission to access the drug", 403
         item = self.find_by_doctorId(doctorId)
         if item:
             return item
@@ -157,7 +159,8 @@ class ItemList(Resource):
 
     @jwt_required()
     def post(self, doctorId):
-
+        if current_identity.id != doctorId:
+            return "you don\'t have permission to create the drug", 403
         conn = None
         params = config()
 
@@ -208,6 +211,9 @@ class ItemList(Resource):
 
     @jwt_required()
     def get(self, doctorId):
+        print('item', current_identity);
+        if current_identity.id != doctorId:
+            return "you don\'t have permission to access the drug(s)", 403
         item = self.find_by_doctorId(doctorId)
         if item:
             return item

@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from flask_jwt import jwt_required
+from flask_jwt import jwt_required, current_identity
 import sqlite3
 import psycopg2
 from config import config
@@ -16,6 +16,8 @@ class Patient(Resource):
 
     # @jwt_required()
     def get(self, doctorId):
+        if current_identity.id != doctorId:
+            return "you don\'t have permission to access the patient", 403
         patient = self.find_by_doctorId(doctorId)
         if patient:
             return patient
@@ -166,7 +168,8 @@ class PatientList(Resource):
 
     @jwt_required()
     def post(self, doctorId):
-
+        if current_identity.id != doctorId:
+            return "you don\'t have permission to create the patient", 403
         conn = None
         params = config()
 
@@ -216,6 +219,9 @@ class PatientList(Resource):
 
     @jwt_required()
     def get(self, doctorId):
+        print('patient', current_identity);
+        if current_identity.id != doctorId:
+            return "you don\'t have permission to access the patient(s)", 403
         patient = self.find_by_doctorId(doctorId)
         if patient:
             return patient

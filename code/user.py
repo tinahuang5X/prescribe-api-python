@@ -2,16 +2,18 @@ import sqlite3
 from flask_restful import Resource, reqparse
 import psycopg2
 from config import config
-
+import bcrypt
 
 class User(object):
-    def __init__(self, _id, firstName, lastName, username, password):
+    def __init__(self, _id, firstName, lastName, username, password, hashed_password):
         # import pdb; pdb.set_trace()
         self.id = _id
         self.firstName = firstName
         self.lastName = lastName
         self.username = username
-        self.password = password
+        # self.password = password
+        self.password = password.encode('utf-8')
+        self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt(10)).decode('utf-8')
 
     @classmethod
     def find_by_username(cls, username):

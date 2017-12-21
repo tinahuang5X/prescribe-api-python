@@ -5,8 +5,8 @@ from flask_cors import CORS
 from flask_restful import Resource, reqparse
 import psycopg2
 from config import config
-import os
-endpoint = os.environ['API_ENDPOINT']
+# import os
+# endpoint = os.environ['API_ENDPOINT']
 
 
 from security import authenticate, identity

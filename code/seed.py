@@ -10,19 +10,19 @@ cur = conn.cursor()
 #       VALUES (1, 'Tina', 'Huang', 'tinahuang@gmail.com', 'youreawizard' )");
 
 cur.execute("INSERT INTO Drug ( generic, brand, indications, doctorId) \
-      VALUES ( 'atorvastatin', 'Liptor', 'lower cholesterol', 1 )");
+      VALUES (1, 'atorvastatin', 'Liptor', 'lower cholesterol', 1 )");
 
 cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId) \
-      VALUES ( 'levothyroxine', 'Synthroid', 'treat hypothyroidism', 1 )");
+      VALUES (2, 'levothyroxine', 'Synthroid', 'treat hypothyroidism', 1 )");
 
 cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId)\
-      VALUES ( 'metformin', 'Glucophage', 'treat type 2 diabetes', 1 )");
+      VALUES (3, 'metformin', 'Glucophage', 'treat type 2 diabetes', 1 )");
 
 cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId)\
-      VALUES ( 'omeprazole', 'Prilosec', 'treat gastroesophageal reflux disease ', 1 )");
+      VALUES (4, 'omeprazole', 'Prilosec', 'treat gastroesophageal reflux disease ', 1 )");
 
 cur.execute("INSERT INTO Drug (id, generic, brand, indications, doctorId)\
-      VALUES ( 'azithromycin', 'Zithromax', 'treat infections caused by bacteria', 1 )");
+      VALUES (5, 'azithromycin', 'Zithromax', 'treat infections caused by bacteria', 1 )");
 
 cur.execute("INSERT INTO Patient (id, name, dob, phone, address, doctorId)\
       VALUES (1, 'Lisa Chang', '1/1/1987', '415-123-4567', '123 Main St. SF, CA 94102', 1 )");
