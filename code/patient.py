@@ -14,7 +14,7 @@ class Patient(Resource):
     parser.add_argument('address', type=str)
     parser.add_argument('doctorId', type=int)
 
-    # @jwt_required()
+    @jwt_required()
     def get(self, doctorId):
         if current_identity.id != doctorId:
             return "you don\'t have permission to access the patient", 403
@@ -73,10 +73,14 @@ class PatientOther(Resource):
             print('1st', patient)
             return {'patient': {'id': patient[0], 'name': patient[1], 'dob': patient[2], 'phone': patient[3], 'address': patient[4], 'doctorId': patient[5]}}
 
+    @jwt_required()
     def patch(self, id):
         data = PatientOther.parser.parse_args()
         print("100", data)
         patient = self.find_by_id(id)
+        if current_identity.id != patient['patient']['doctorId']:
+            return "you don\'t have permission to edit the patient", 403
+
         print('2nd', patient)
         updated_patient = {'id': id, 'name': data['name'], 'dob': data['dob'], 'phone': data['phone'], 'address': data['address'], 'doctorId': data['doctorId']}
         print('3rd', updated_patient)
@@ -133,7 +137,7 @@ class PatientOther(Resource):
         cur.close()
         conn.close()
 
-    # @jwt_required()
+    @jwt_required()
     def delete(self, id):
         # connection = sqlite3.connect('data.db')
         # cursor = connection.cursor()
@@ -145,6 +149,10 @@ class PatientOther(Resource):
         conn = psycopg2.connect(**params)
 
         cur = conn.cursor()
+        patient = self.find_by_id(id)
+
+        if current_identity.id != patient['patient']['doctorId']:
+            return "you don\'t have permission to delete the patient", 403
 
         query = "DELETE FROM Patient WHERE id=%s"
         cur.execute(query, (id,))
@@ -229,8 +237,6 @@ class PatientList(Resource):
 
     @classmethod
     def find_by_doctorId(cls, doctorId):
-        # connection = sqlite3.connect('data.db')
-        # cursor = connection.cursor()
         conn = None
         params = config()
 

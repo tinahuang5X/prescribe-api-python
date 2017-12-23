@@ -11,7 +11,8 @@ def create_tables():
             firstName TEXT NOT NULL,
             lastName TEXT NOT NULL,
             username TEXT NOT NULL UNIQUE,
-            password VARCHAR (60) NOT NULL
+            
+            hashed_password VARCHAR (60) NOT NULL
         )
         """,
         """

@@ -5,15 +5,15 @@ from config import config
 import bcrypt
 
 class User(object):
-    def __init__(self, _id, firstName, lastName, username, password, hashed_password):
+    def __init__(self, _id, firstName, lastName, username, hashed_password):
         # import pdb; pdb.set_trace()
         self.id = _id
         self.firstName = firstName
         self.lastName = lastName
         self.username = username
-        # self.password = password
-        self.password = password.encode('utf-8')
-        self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt(10)).decode('utf-8')
+        # self.password = ''
+        # self.password = password.encode('utf-8')
+        self.hashed_password = hashed_password;
 
     @classmethod
     def find_by_username(cls, username):
@@ -98,10 +98,12 @@ class UserRegister(Resource):
 
         cur = conn.cursor()
 
+        hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt(10)).decode('utf-8')
+
         query = """
-        INSERT INTO doctor (firstName, lastName, username, password)
-        VALUES ('{first_name}', '{last_name}', '{username}', '{password}'); """.format(first_name=data['firstName'], last_name=data['lastName'],
-        username=data['email'], password=data['password'] )
+        INSERT INTO doctor (firstName, lastName, username, hashed_password)
+        VALUES ('{first_name}', '{last_name}', '{username}', '{hashed_password}'); """.format(first_name=data['firstName'], last_name=data['lastName'],
+        username=data['email'],  hashed_password=hashed_password )
 
 
         cur.execute(query)

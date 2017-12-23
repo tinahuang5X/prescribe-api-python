@@ -1,6 +1,6 @@
 from werkzeug.security import safe_str_cmp
 from flask_jwt import JWT, jwt_required, current_identity
-from flask.ext.bcrypt import Bcrypt
+
 from user import User
 from flask_restful import Resource, reqparse
 import psycopg2
@@ -17,7 +17,7 @@ def authenticate(username, password):
         return user
     else:
         logging.warning(user, user.password, password, "login failure")
-        return 400
+        return None
 
 # def authenticate(username, password):
 #     user = User.find_by_username(username)

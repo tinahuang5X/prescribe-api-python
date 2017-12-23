@@ -14,7 +14,7 @@ class Item(Resource):
     parser.add_argument('indications', type=str)
     parser.add_argument('doctorId', type=int)
 
-    # @jwt_required()
+    @jwt_required()
     def get(self, doctorId):
         if current_identity.id != doctorId:
             return "you don\'t have permission to access the drug", 403
@@ -72,10 +72,16 @@ class ItemOther(Resource):
             print('1st', drug)
             return {'drug': {'id': drug[0], 'generic': drug[1], 'brand': drug[2], 'indications': drug[3], 'doctorId': drug[4]}}
 
+    @jwt_required()
     def patch(self, id):
+
         data = ItemOther.parser.parse_args()
         print("100", data)
         item = self.find_by_id(id)
+
+        if current_identity.id != item['drug']['doctorId']:
+            return "you don\'t have permission to edit the drug", 403
+
         print('2nd', item)
         updated_item = {'id': id, 'generic': data['generic'], 'brand': data['brand'], 'indications': data['indications'], 'doctorId': data['doctorId']}
         print('3rd', updated_item)
@@ -127,7 +133,7 @@ class ItemOther(Resource):
         cur.close()
         conn.close()
 
-    # @jwt_required()
+    @jwt_required()
     def delete(self, id):
         # connection = sqlite3.connect('data.db')
         # cursor = connection.cursor()
@@ -139,6 +145,10 @@ class ItemOther(Resource):
         conn = psycopg2.connect(**params)
 
         cur = conn.cursor()
+        item = self.find_by_id(id)
+
+        if current_identity.id != item['drug']['doctorId']:
+            return "you don\'t have permission to delete the drug", 403
 
         query = "DELETE FROM Drug WHERE id=%s"
         cur.execute(query, (id,))
