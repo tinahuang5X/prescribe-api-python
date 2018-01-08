@@ -5,16 +5,16 @@ from config import config
 def create_tables():
     """ create tables in the PostgreSQL database"""
     commands = (
-        """
-        CREATE TABLE Doctor (
-            id SERIAL PRIMARY KEY,
-            firstName TEXT NOT NULL,
-            lastName TEXT NOT NULL,
-            username TEXT NOT NULL UNIQUE,
-            
-            hashed_password VARCHAR (60) NOT NULL
-        )
-        """,
+        # """
+        # CREATE TABLE Doctor (
+        #     id SERIAL PRIMARY KEY,
+        #     firstName TEXT NOT NULL,
+        #     lastName TEXT NOT NULL,
+        #     username TEXT NOT NULL UNIQUE,
+        #
+        #     hashed_password VARCHAR (60) NOT NULL
+        # )
+        # """,
         """
         CREATE TABLE Drug (
             id SERIAL PRIMARY KEY,
